@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+//All the fields are in camelCase
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  gender       String
+  date         DateTime @default(now())
+  guardianName String
+  age          Int
+  purpose      String
+
+  // Student or Staff
+  category       String
+  enrollmentId   String @unique
+  DOB            String
+  email          String @unique
+  whatsAppNumber String
+  dietPreference String
+
+  // Student : Hall; Teacher : Department
+  address           String
+  involvedInSports  Boolean
+  experienceLevel   String
+  height            Float
+  weight            Float
+  chest             Float
+  biceps            Float
+  thigh             Float
+  waist             Float
+  medicalConditions String
+  disciplineStatus  String
+  photoUrl          String
+  idCardUrl         String
+  Workouts          Workout[]
+  sets              Set[]
+}
+
+model Workout {
+  id       Int    @id @default(autoincrement())
+  name     String
+  bodyPart String
+  sets     Set[]
+  user     User   @relation(fields: [userId], references: [enrollmentId])
+  userId   String
+
+  @@unique([name, userId])
+}
+
+model Set {
+  id          Int     @id @default(autoincrement())
+  setNumber   Int
+  weight      Float
+  repetitions Int
+  workout     Workout @relation(fields: [workoutId], references: [id])
+  user        User    @relation(fields: [userId], references: [enrollmentId])
+  userId      String
+  workoutId   Int
+
+  @@unique([setNumber, workoutId, userId])
+}

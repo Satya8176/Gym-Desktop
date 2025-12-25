@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+
+//Corrections to be made - [1] add @unique to name in exercise
+//[2]- userId in the reoutine preventing the multiple routine creation 
+
+
+
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+//All the fields are in camelCase age and date deleted
+
+//Here this table for the owner data
+
+model Owner {
+  id             Int    @id @default(autoincrement())
+  name           String
+  email          String @unique
+  phNumber       String    @unique
+  password       String @unique
+}
+
+
+//Model for the User data
+model User {
+  id             Int     @id @default(autoincrement())
+  date           String
+  name           String
+  enrollmentId   String  @unique
+  whatsAppNumber String  @unique
+  email          String  @unique
+  gender         String? @default("Not Mention")
+  age            String?
+  DOB            String
+  address        String // Student : Hall; Teacher : Department
+  category       String // Student or Staff
+
+  guardianName      String
+  purpose           String
+  dietPreference    String
+  involvedInSports  String
+  experienceLevel   String
+  height            String
+  weight            String
+  chest             String
+  calf              String
+  biceps            String
+  thigh             String
+  waist             String
+  medicalConditions String
+  disciplineStatus  String
+  photoUrl          String
+  idCardUrl         String
+  testDone          Boolean @default(false)
+}
+
+
+model userSplit {
+  id      Int       @id @default(autoincrement())
+  userId  String    @unique
+  routine Routine[]
+}
+
+model Exercise {
+  id       Int       @id @default(autoincrement())
+  name     String     @unique
+  muscleGroup String
+  equipment String
+  description String
+  workouts Workout[]
+}
+
+model Workout {
+  id         Int      @id @default(autoincrement())
+  dayId      Int
+  exerciseId Int
+  day        Day      @relation(fields: [dayId], references: [id])
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  sets       Set[]
+}
+
+model Set {
+  id          Int     @id @default(autoincrement())
+  setNo       Int
+  workoutId   Int
+  weight      Float
+  repetitions Int
+  workout     Workout @relation(fields: [workoutId], references: [id])
+}
+
+model Routine {
+  id     Int       @id @default(autoincrement())
+  name   String
+  userId Int 
+  split  userSplit @relation(fields: [userId], references: [id])
+  day    Day[]
+}
+
+model Day {
+  id        Int       @id @default(autoincrement())
+  name      String
+  routineId Int
+  routine   Routine   @relation(fields: [routineId], references: [id])
+  workouts  Workout[]
+}
+
+model Test {
+  id         Int     @id @default(autoincrement())
+  userId     String  @unique     // Each user only one test record
+  maxWeight  String
+  maxReps    String
+}
