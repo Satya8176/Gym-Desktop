@@ -1,9 +1,6 @@
 import "dotenv/config";
 
-import { Prisma, PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
+import prisma from "../database.js";
 //============================================== Get the Latest Routine ==============================//
 
 async function getLatestRoutine(req, res) {
@@ -179,7 +176,7 @@ async function getAllMemRoutine(req, res) {
       message: "Routines fetched successfully with member info",
     });
   } catch (err) {
-    console.log("This is the error : ", err);
+    // console.log("This is the error : ", err);
     return res.status(500).json({
       success: false,
       message: "Internal server error while fetching User",
@@ -206,7 +203,7 @@ async function isRoutine(req, res) {
       });
     }
 
-    console.log(usersWithoutRoutine);
+    // console.log(usersWithoutRoutine);
 
     return res.status(200).json({
       success: true,

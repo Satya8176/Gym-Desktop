@@ -1,0 +1,51 @@
+{
+  "name": "gym-desktop-app",
+  "version": "1.0.0",
+  "description": "Gym Management Desktop App",
+  "main": "electron/main.js",
+  "private": "true",
+  "scripts": {
+    "dev:frontend": "cd Frontend && npm run dev",
+    "dev:electron": "electron .",
+    "dev": "npm-run-all -p dev:frontend dev:electron",
+
+    "build:frontend": "cd Frontend && npm run build",
+    "pack": "npx electron-builder --dir",
+    "dist": "npx electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^39.2.7",
+    "electron-builder": "^24.13.3",
+    "npm-run-all": "^4.1.5"
+  },
+  "build": {
+    "appId": "com.yourcompany.gymapp",
+    "productName": "Gym App",
+    "asar":true,
+    "asarUnpack": [
+      "Backend/node_modules/**"
+    ],
+    "files": [
+      "electron/**/*",
+      "Frontend/dist/**/*",
+      "Backend/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "Backend/prisma",
+        "to": "prisma"
+      }
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

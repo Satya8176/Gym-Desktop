@@ -1,11 +1,12 @@
 import axios from "axios"
 import toast from "react-hot-toast";
+import API from "../api/axiosInstance";
 
 
 export const adminLogin=async(body)=>{
   try{
-    const res=await axios.post(
-      "http://localhost:4000/api/owner/signIn",
+    const res=await API.post(
+      "/api/owner/signIn",
       body
     )
     if (res.status !== 200) {
@@ -31,8 +32,8 @@ export const adminSignUp=async(formData)=>{
       fd.append("password",formData.password);
       fd.append("cnfpassword",formData.confirmPassword)
       fd.append("phone",formData.phone);
-      const res=await axios.post(
-        "http://localhost:4000/api/owner/signUp",
+      const res=await API.post(
+        "/api/owner/signUp",
         fd
       )
       if (!(res.status === 200)) {

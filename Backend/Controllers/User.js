@@ -1,9 +1,8 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import {  Prisma } from "@prisma/client";
 import iconv from "iconv-lite";
 import fs, { existsSync } from "fs";
 import "dotenv/config";
-
-const prisma = new PrismaClient();
+import prisma from "../database.js";
 import Papa from "papaparse";
 import { scryptSync } from "crypto";
 

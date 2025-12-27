@@ -1,13 +1,14 @@
 import axios from "axios";
 import toast from "react-hot-toast";
+import API from "../api/axiosInstance";
 
 
 export const uploadCsv=async(selectedFile)=>{
   try{
       const formData = new FormData();
       formData.append("file", selectedFile);
-      const res = await axios.post(
-          "http://localhost:4000/api/user/create",
+      const res = await API.post(
+          "/api/user/create",
           formData,
           { headers: {
             "Content-Type": "multipart/form-data",
@@ -28,8 +29,8 @@ export const uploadCsv=async(selectedFile)=>{
 
 export const getMembers=async()=>{
   try{
-    const res=await axios.get(
-      "http://localhost:4000/api/user/getUsers"
+    const res=await API.get(
+      "/api/user/getUsers"
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Fetching members fails");
     const data = res.data;
@@ -44,8 +45,8 @@ export const getSingleUser=async(enrollmentId)=>{
   try{
     const body=new FormData();
     body.append("enrollmentId",enrollmentId)
-    const res=await axios.post(
-      "http://localhost:4000/api/user/get-single-user",
+    const res=await API.post(
+      "/api/user/get-single-user",
       body
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Fetching members fails");
@@ -59,8 +60,8 @@ export const getSingleUser=async(enrollmentId)=>{
 
 export const createExercise=async(body)=>{
   try{
-    const res=await axios.post(
-      "http://localhost:4000/api/workout/create-exercise",
+    const res=await API.post(
+      "/api/workout/create-exercise",
       body
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Create exercise failed");
@@ -75,8 +76,8 @@ export const createExercise=async(body)=>{
 
 export const getAllExercise=async()=>{
   try{
-    const res=await axios.get(
-      "http://localhost:4000/api/workout/get-all-exercise"
+    const res=await API.get(
+      "/api/workout/get-all-exercise"
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Get all exercise failed");
     const data = res.data;
@@ -89,8 +90,8 @@ export const getAllExercise=async()=>{
 
 export const getAllRoutine=async(body)=>{
   try{
-    const res=await axios.post(
-      "http://localhost:4000/api/getWorkout/get-all-routines",
+    const res=await API.post(
+      "/api/getWorkout/get-all-routines",
       body
     )
 
@@ -116,8 +117,8 @@ export const modifyTestResult=(dataArray)=>{
 
 export const createTestFun=async(body)=>{
   try{
-    const res=await axios.post(
-      "http://localhost:4000/api/test/create-test",
+    const res=await API.post(
+      "/api/test/create-test",
       body
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Test upload failed");
@@ -137,8 +138,8 @@ export const reTest=async(body)=>{
       userId:body.userId,
       testEntries:newTestEntries
     }
-    const res=await axios.post(
-      "http://localhost:4000/api/test/retest",
+    const res=await API.post(
+      "/api/test/retest",
       newObj
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Retest upload failed");
@@ -155,8 +156,8 @@ export const fetchUserTests=async(enrollmentId)=>{
   try{
     const fd=new FormData();
     fd.append("userId",enrollmentId)
-    const res=await axios.post(
-      "http://localhost:4000/api/test/get-test",
+    const res=await API.post(
+      "/api/test/get-test",
       fd
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Test fetching Error");
@@ -195,8 +196,8 @@ export const updateUserDetail=async(userId,data)=>{
     const fd=new FormData();
     fd.append("userId",userId);
     fd.append("data",JSON.stringify(data));
-    const res= await axios.post(
-      "http://localhost:4000/api/user/update-User-Detail",
+    const res= await API.post(
+      "/api/user/update-User-Detail",
       fd
     )
     if (res.status !== 200) throw new Error(res.data?.message || "User detail updation error");
@@ -219,8 +220,8 @@ export const createRoutineFun=async(enrollmentId,Name,WeekRoutine)=>{
     fd.append("enrollmentId",enrollmentId);
     fd.append("Name",Name);
     fd.append("WeekRoutine",JSON.stringify(WeekRoutine));
-    const res= await axios.post(
-      "http://localhost:4000/api/workout/create-routine",
+    const res= await API.post(
+      "/api/workout/create-routine",
       fd
     )
     if (res.status !== 200) throw new Error(res.data?.message || "Routine creation error");
@@ -238,8 +239,8 @@ export const getLatestRoutine=async(enrollmentId)=>{
   try{
     const fd=new FormData();
     fd.append("enrollmentId",enrollmentId);
-    const res=await axios.post(
-      "http://localhost:4000/api/getWorkout/get-latest-routine",
+    const res=await API.post(
+      "/api/getWorkout/get-latest-routine",
       fd
     )
 
@@ -259,8 +260,8 @@ export const getLatestRoutine=async(enrollmentId)=>{
 export const getAllMemHaveRoutine=async()=>{
   try{
    
-    const res=await axios.get(
-      "http://localhost:4000/api/getWorkout/all-mem-routine"
+    const res=await API.get(
+      "/api/getWorkout/all-mem-routine"
     )
 
     if (res.status !== 200) {
