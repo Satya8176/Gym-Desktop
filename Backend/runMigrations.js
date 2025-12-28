@@ -6,14 +6,25 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 export function runMigrations() {
   try {
-    // console.log("Running Prisma migrations…");
+    console.log("Running prisma migrate deploy...");
 
-    execSync("npm run migrate:deploy", {
-      cwd: __dirname,
-      stdio: "inherit"
-    });
+    const prismaPath = path.join(
+      __dirname,
+      "node_modules",
+      ".bin",
+      process.platform === "win32" ? "prisma.cmd" : "prisma"
+    );
 
-    // console.log("Migrations complete.");
+    execSync(
+      `"${prismaPath}" migrate deploy --schema=./prisma/schema.prisma`,
+      {
+        cwd: __dirname,
+        stdio: "pipe",
+        env: { ...process.env }
+      }
+    );
+
+    console.log("Migrations complete.");
   } catch (err) {
     console.error("Migration failed:", err);
     throw err;

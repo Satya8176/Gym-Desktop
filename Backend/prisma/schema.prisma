@@ -7,11 +7,9 @@
 //[2]- userId in the reoutine preventing the multiple routine creation 
 
 
-
-
-
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {

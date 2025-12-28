@@ -10,8 +10,10 @@
     "dev": "npm-run-all -p dev:frontend dev:electron",
 
     "build:frontend": "cd Frontend && npm run build",
-    "pack": "npx electron-builder --dir",
-    "dist": "npx electron-builder"
+    "build:backend": "cd Backend && npm install --production && cd ..",
+    "prepack:backend": "cd Backend && npm install --production && cd ..",
+    "pack": "npm run build:frontend && npm run build:backend && npx electron-builder --dir",
+    "dist": "npm run build:frontend && npm run build:backend && npx electron-builder"
   },
   "devDependencies": {
     "electron": "^39.2.7",
@@ -21,21 +23,13 @@
   "build": {
     "appId": "com.yourcompany.gymapp",
     "productName": "Gym App",
-    "asar":true,
-    "asarUnpack": [
-      "Backend/node_modules/**"
-    ],
+    "asar": false,
+    "includeSubNodeModules": true,
     "files": [
       "electron/**/*",
       "Frontend/dist/**/*",
       "Backend/**/*",
       "package.json"
-    ],
-    "extraResources": [
-      {
-        "from": "Backend/prisma",
-        "to": "prisma"
-      }
     ],
     "directories": {
       "buildResources": "assets"

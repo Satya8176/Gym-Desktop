@@ -9,9 +9,7 @@ import { User } from 'lucide-react';
 function WithRoutine() {
   const [activeRoutine,setActiveRoutine]=useState([]);
   const [loading,setLoading]=useState(false);
-  
 
-  
   useEffect(()=>{
     const run=async()=>{
       setLoading(true);
@@ -23,6 +21,12 @@ function WithRoutine() {
     run();
   },[])
 
+  if(!activeRoutine  || activeRoutine?.length===0){
+    return (<div  className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <Navbar />
+      <div className='dark:text-slate-100 text-slate-700 text-2xl text-center my-10 font-bold'>No Member have latest routine</div>
+    </div>)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
