@@ -1,0 +1,215 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+//Corrections to be made - [1] add @unique to name in exercise
+//[2]- userId in the reoutine preventing the multiple routine creation 
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// FIX 1: Added relationMode = "prisma"
+// SQLite does not enforce foreign key constraints by default.
+// This tells Prisma to emulate cascades at the application level.
+// Without this, onDelete: Cascade has NO effect on SQLite.
+datasource db {
+  provider     = "sqlite"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+//All the fields are in camelCase age and date deleted
+
+//Here this table for the owner data
+
+model Owner {
+  id        Int     @id @default(autoincrement())
+  userName  String  @unique
+  password  String  @unique
+  isDev     Boolean @default(false)
+  devSecret String? @unique
+}
+
+//Model for the User data
+// FIX 2: Added back-reference fields `split` and `test`
+// Prisma requires BOTH sides of a relation to be declared.
+// Without these, Prisma does not know User is the parent of userSplit and Test.
+// `split userSplit?` — one user has one split (optional, so existing users without splits are safe)
+// `test  Test?`      — one user has one test  (optional, so existing users without tests are safe)
+model User {
+  id             Int     @id @default(autoincrement())
+  date           String?
+  name           String
+  enrollmentId   String  @unique
+  whatsAppNumber String  @unique
+  email          String  @unique
+  gender         String? @default("Not Mention")
+  age            String?
+  DOB            String?
+  address        String? // Student : Hall; Teacher : Department
+  category       String?// Student or Staff
+
+  guardianName      String
+  purpose           String?
+  dietPreference    String?
+  involvedInSports  String?
+  experienceLevel   String
+  height            String
+  weight            String
+  chest             String
+  calf              String
+  biceps            String
+  thigh             String
+  waist             String
+  medicalConditions String
+  disciplineStatus  String?
+  photoUrl          String?
+  idCardUrl         String?
+  testDone          Boolean @default(false)
+
+  // ✅ FIX 2: Back-reference relations added
+  split userSplit?
+  test  Test?
+}
+
+// FIX 3: Added @relation directive to userSplit
+// Previously userId was just a plain String with no Prisma relation.
+// Now it properly references User.enrollmentId (which is a String @unique — valid FK target).
+// onDelete: Cascade ensures when User is deleted → userSplit is deleted automatically.
+model userSplit {
+  id      Int       @id @default(autoincrement())
+  userId  String    @unique
+  // ✅ FIX 3: Proper relation to User via enrollmentId + cascade on delete
+  user    User      @relation(fields: [userId], references: [enrollmentId], onDelete: Cascade)
+  routine Routine[]
+}
+
+// Not changed — Exercise is global/shared data, no user relation needed
+model Exercise {
+  id               Int               @id @default(autoincrement())
+  name             String            @unique
+  muscleGroup      String
+  equipment        String
+  description      String
+  workouts         Workout[]
+  templateWorkouts TemplateWorkout[]
+}
+
+// Not changed — Workout already has correct cascade from Day
+model Workout {
+  id         Int      @id @default(autoincrement())
+  dayId      Int
+  exerciseId Int
+  day        Day      @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  sets       Set[]
+}
+
+// Not changed — Set already has correct cascade from Workout
+model Set {
+  id          Int     @id @default(autoincrement())
+  setNo       Int
+  workoutId   Int
+  weight      Float
+  repetitions Int
+  workout     Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+}
+
+// FIX 4: Added onDelete: Cascade to Routine → userSplit relation
+// The relation already existed but was missing the cascade.
+// When userSplit is deleted (which happens when User is deleted via Fix 3),
+// all Routines belonging to that split must also be deleted.
+// Without this, Routines would become orphaned after userSplit is deleted.
+model Routine {
+  id       Int       @id @default(autoincrement())
+  name     String
+  userId   Int
+  duration String
+  // ✅ FIX 4: Added onDelete: Cascade
+  split    userSplit @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day      Day[]
+}
+
+// Not changed — Day already has correct cascade from Routine
+model Day {
+  id        Int       @id @default(autoincrement())
+  name      String
+  routineId Int
+  routine   Routine   @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  workouts  Workout[]
+}
+
+// FIX 5: Added @relation directive to Test
+// Previously userId was just a plain String with no Prisma relation.
+// Now it properly references User.enrollmentId.
+// onDelete: Cascade ensures when User is deleted → Test is deleted automatically.
+model Test {
+  id             Int    @id @default(autoincrement())
+  userId         String @unique // Each user only one test record
+  // ✅ FIX 5: Proper relation to User via enrollmentId + cascade on delete
+  user           User   @relation(fields: [userId], references: [enrollmentId], onDelete: Cascade)
+  maxWeight      String
+  maxReps        String
+  weightExercise String
+  repExercise    String
+}
+
+// Not changed — BodyPart is global/shared data
+model BodyPart {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+// Not changed — Equipment is global/shared data
+model Equipment {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+// Not changed — Template is global/shared data, not user-owned
+model Template {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique
+  description  String
+  templateDays TemplateDay[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// Not changed — already has correct cascade from Template
+model TemplateDay {
+  id               Int               @id @default(autoincrement())
+  name             String
+  templateId       Int
+  template         Template          @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateWorkouts TemplateWorkout[]
+}
+
+// Not changed — already has correct cascade from TemplateDay
+model TemplateWorkout {
+  id            Int @id @default(autoincrement())
+  templateDayId Int
+
+  exerciseId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  sets TemplateSet[]
+
+  templateDay TemplateDay @relation(fields: [templateDayId], references: [id], onDelete: Cascade)
+}
+
+// Not changed — already has correct cascade from TemplateWorkout
+model TemplateSet {
+  id                Int @id @default(autoincrement())
+  templateWorkoutId Int
+
+  setNo       Int
+  weight      Float
+  repetitions Int
+
+  templateWorkout TemplateWorkout @relation(fields: [templateWorkoutId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,20 @@
+{
+   "name": "gym-management-desktop",
+   "version": "1.0.0",
+   "description": "Gym Management System Desktop Application",
+   "author": "AMU Gymnasium",
+   "main": "electron/main.js",
+   "scripts": {
+      "frontend:build": "cd frontend && npm run build",
+      "backend:install": "cd backend && npm install",
+      "frontend:install": "cd frontend && npm install",
+      "dev": "concurrently \"cd backend && npm start\" \"cd frontend && npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+      "build": "npm run frontend:build && electron-builder"
+   },
+   "devDependencies": {
+      "concurrently": "^8.2.0",
+      "electron": "^42.4.1",
+      "electron-builder": "^26.15.3",
+      "wait-on": "^7.0.0"
+   }
+}

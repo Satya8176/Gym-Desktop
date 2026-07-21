@@ -1,0 +1,45 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# SQLite database files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Prisma
+prisma/generated/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+
+# Dependencies
+node_modules/
+
+# Prisma generated client
+generated/
+
+# SQLite database
+prisma/*.db
+prisma/*.db-journal
+
+# Logs
+*.log
+
+# Environment
+.env

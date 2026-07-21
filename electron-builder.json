@@ -1,0 +1,23 @@
+{
+  "appId": "com.gym.management",
+  "productName": "Gym Management System",
+
+  "directories": {
+    "output": "dist"
+  },
+
+  "asar": false,
+
+  "files": [
+    "electron/**/*",
+    "Backend/**/*",
+    "Frontend/dist/**/*",
+    "package.json"
+  ],
+
+  "win": {
+    "target": "nsis",
+    "signAndEditExecutable": false,
+     "icon": "build/icon.ico"
+  }
+}
